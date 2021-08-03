@@ -2,8 +2,7 @@ package com.summerschool.library.controller;
 
 import com.summerschool.library.model.domain.User;
 import com.summerschool.library.model.dto.UserDTO;
-import com.summerschool.library.service.InitService;
-import com.summerschool.library.service.UserService;
+import com.summerschool.library.service.IUserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,10 +17,7 @@ import java.util.stream.Collectors;
 public class UserController {
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private InitService initService;
+    private IUserService userService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -40,12 +36,6 @@ public class UserController {
 
         User savedUser = userService.add(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(savedUser, UserDTO.class));
-    }
-
-    @PutMapping("/initialize")
-    public ResponseEntity initialize() {
-        initService.init();
-        return ResponseEntity.noContent().build();
     }
 
 }

@@ -2,15 +2,18 @@ package com.summerschool.library.controller;
 
 import com.summerschool.library.model.domain.Book;
 import com.summerschool.library.model.dto.BookDTO;
-import com.summerschool.library.service.BookService;
+import com.summerschool.library.model.dto.SortFieldDTO;
+import com.summerschool.library.service.IBookService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,15 +24,21 @@ import static com.summerschool.library.exception.Constants.BOOK_NOT_FOUND;
 public class BookController {
 
     @Autowired
-    private BookService bookService;
+    private IBookService bookService;
 
     @Autowired
     private ModelMapper modelMapper;
 
     @GetMapping
-    public ResponseEntity<List<BookDTO>> getAll() {
-        //TODO complete with query params for filtering by different fields
-        return ResponseEntity.ok(bookService.getAll()
+    public ResponseEntity<List<BookDTO>> getAll(@RequestParam(value = "author", required = false) String author,
+                                                @RequestParam(value = "publisher", required = false) String publisher,
+                                                @RequestParam(value = "title", required = false) String title,
+                                                @RequestParam(value = "language", required = false) String language,
+                                                @RequestParam(value = "published", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate published,
+                                                @RequestParam(value = "available", required = false) Boolean available,
+                                                @RequestParam(value = "page", required = false) Integer page,
+                                                @RequestParam(value = "sorted", required = false) SortFieldDTO sorted) {
+        return ResponseEntity.ok(bookService.getAll(author, publisher, title, language, published, available, page, sorted)
                 .stream()
                 .map(book -> modelMapper.map(book, BookDTO.class))
                 .collect(Collectors.toList()));
@@ -59,11 +68,11 @@ public class BookController {
     }
 
     @GetMapping("/borrowedBy/{userId}")
-    public ResponseEntity<List<BookDTO>> getAllBooksBorrowedByUser(@PathVariable("userId") Long userId) {
-        return ResponseEntity.ok(bookService.getAllBooksBorrowedByUser(userId)
+    public List<BookDTO> getAllBooksBorrowedByUser(@PathVariable("userId") Long userId) {
+        return bookService.getAllBooksBorrowedByUser(userId)
                 .stream()
                 .map(book -> modelMapper.map(book, BookDTO.class))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/{categoryId}")

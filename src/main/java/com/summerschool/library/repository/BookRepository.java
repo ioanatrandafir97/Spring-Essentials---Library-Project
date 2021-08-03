@@ -2,28 +2,38 @@ package com.summerschool.library.repository;
 
 import com.summerschool.library.model.domain.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
 
-    //TODO: Simple Derived Query (find books by author)
+    List<Book> findByAuthor(String author); //Simple Derived Query
 
-    //TODO: Derived Query with multiple clauses (find books by author and published date before a given date)
+    List<Book> findByAuthorAndPublishedDateBefore(String author, LocalDate publishedDate); //Multiple clauses
 
-    //TODO: Derived Query with operators for String (find books by title starting with a given string)
+    List<Book> findByTitleIgnoreCaseStartingWith(String title); //Operators for String parameters
 
-    //TODO: Derived Query with comparison condition (find available books)
+    List<Book> findByAvailableCopiesGreaterThan(Integer copies); //Comparison Condition
 
-    //TODO: Derived Query with sorted results (find books by category ordered by the title)
+    List<Book> findByCategoryIdOrderByTitle(Long categoryId); //Sorting Derived Query Results
 
-    //TODO: JPQL Query (find books by language)
+    @Query(value = "Select b from Book b where b.language = ?1")
+    List<Book> queryAllBooksByLanguage(String language);
 
-    //TODO: JPQL Query (find all available books by author)
+    @Query(value = "Select b from Book b where b.availableCopies > 0 and b.author like %:author")
+    List<Book> queryAllAvailableBooksByAuthor(String author);
 
-    //TODO: Native Query (find all books by publisher)
+    @Query(value = "Select * from books where publisher = :publisher",
+            nativeQuery = true)
+    List<Book> queryAllBooksByPublisher(String publisher);
 
-    //TODO: Native query (find all books borrowed by a user)
+    @Query(value = "Select * from books where id in (select book_id from borrows where user_id = ?1)",
+            nativeQuery = true)
+    List<Book> queryAllBooksBorrowedByUserId(Long userId);
 
 }
 

@@ -2,7 +2,7 @@ package com.summerschool.library.controller;
 
 import com.summerschool.library.model.domain.Borrow;
 import com.summerschool.library.model.dto.BorrowDTO;
-import com.summerschool.library.service.BorrowService;
+import com.summerschool.library.service.postgres.BorrowService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

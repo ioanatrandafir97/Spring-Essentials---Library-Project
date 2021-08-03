@@ -1,4 +1,4 @@
-package com.summerschool.library.service;
+package com.summerschool.library.service.postgres;
 
 import com.summerschool.library.exception.BookAlreadyReturnedException;
 import com.summerschool.library.exception.BookOutOfStockException;
@@ -6,7 +6,8 @@ import com.summerschool.library.model.domain.Book;
 import com.summerschool.library.model.domain.Borrow;
 import com.summerschool.library.model.domain.User;
 import com.summerschool.library.repository.BorrowRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.summerschool.library.service.IBookService;
+import com.summerschool.library.service.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,19 +22,20 @@ import static com.summerschool.library.exception.Constants.USER_NOT_FOUND;
 @Service
 public class BorrowService {
 
-    @Autowired
-    private BorrowRepository borrowRepository;
+    private final BorrowRepository borrowRepository;
+    private final IBookService bookService;
+    private final IUserService userService;
 
-    @Autowired
-    private BookService bookService;
-
-    @Autowired
-    private IUserService userService;
+    public BorrowService(BorrowRepository borrowRepository, IBookService bookService, IUserService userService) {
+        this.borrowRepository = borrowRepository;
+        this.bookService = bookService;
+        this.userService = userService;
+    }
 
     public Borrow add(Long userId, Long bookId) {
         Borrow borrow = new Borrow();
         Book book = bookService.get(bookId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, BOOK_NOT_FOUND));
-        if(book.getAvailableCopies() == 0) {
+        if (book.getAvailableCopies() == 0) {
             throw new BookOutOfStockException();
         }
         book.borrowBook();
@@ -56,7 +58,7 @@ public class BorrowService {
     }
 
     public void returnBook(Borrow borrow) {
-        if(borrow.getReturnDate() != null) {
+        if (borrow.getReturnDate() != null) {
             throw new BookAlreadyReturnedException();
         }
         LocalDate returnDate = LocalDate.now();

@@ -1,3 +1,4 @@
+
 spring:
   jpa:
     show-sql: true
@@ -8,4 +9,12 @@ spring:
     url: "jdbc:postgresql://localhost:5432/librarydb"
     driverClassName: org.postgresql.Driver
     username: postgres
-    password:
+    password: changeme
+  profiles:
+    active: local
+
+integration:
+  author:
+    url:
+      base: http://localhost:8081/author-app/author
+      specific: ${integration.author.url.base}/{authorId}
