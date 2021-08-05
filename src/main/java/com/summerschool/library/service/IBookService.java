@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IBookService {
+    List<Book> getAll();
     List<Book> getAll(String author, String publisher, String title, String language, LocalDate published, Boolean available, Integer page, SortFieldDTO sorted);
     Optional<Book> get(Long id);
     Book add(Long categoryId, Book book);

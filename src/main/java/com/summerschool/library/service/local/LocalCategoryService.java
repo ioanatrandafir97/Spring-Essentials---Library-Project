@@ -26,6 +26,7 @@ public class LocalCategoryService implements ICategoryService {
 
     public Category add(Category category) {
         category.setCreatedAt(LocalDate.now());
+        category.setId(Long.valueOf(categoryList.size()));
         categoryList.add(category);
         return category;
     }

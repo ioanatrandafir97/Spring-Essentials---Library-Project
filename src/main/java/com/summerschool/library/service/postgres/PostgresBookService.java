@@ -39,7 +39,9 @@ public class PostgresBookService implements IBookService {
         this.saveBooks();
     }
 
-
+    public List<Book> getAll() {
+        return bookRepository.findAll();
+    }
 
     public List<Book> getAll(String author, String publisher, String title, String language, LocalDate published, Boolean available, Integer page, SortFieldDTO sorted) {
         if (!isEmpty(author) && published != null) {

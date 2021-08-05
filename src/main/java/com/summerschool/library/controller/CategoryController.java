@@ -44,7 +44,8 @@ public class CategoryController {
         Category category = modelMapper.map(categoryDTO, Category.class);
 
         Category savedCategory = categoryService.add(category);
-        return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(savedCategory, CategoryDTO.class));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(modelMapper.map(savedCategory, CategoryDTO.class));
     }
 
     @PutMapping("/{id}")

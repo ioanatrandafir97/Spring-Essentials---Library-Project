@@ -33,7 +33,6 @@ public class LocalBookService implements IBookService {
         this.bookList = initBookList();
     }
 
-
     private List<Book> initBookList() {
         List<Book> books = new ArrayList<>();
 
@@ -104,6 +103,9 @@ public class LocalBookService implements IBookService {
         return books;
     }
 
+    public List<Book> getAll(){
+        return bookList;
+    }
 
     public List<Book> getAll(String author, String publisher, String title, String language, LocalDate published, Boolean available, Integer page, SortFieldDTO sorted) {
         return bookList.stream()
