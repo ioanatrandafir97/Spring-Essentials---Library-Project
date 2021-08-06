@@ -2,15 +2,18 @@ package com.summerschool.library.controller;
 
 import com.summerschool.library.model.domain.Book;
 import com.summerschool.library.model.dto.BookDTO;
+import com.summerschool.library.model.dto.SortFieldDTO;
 import com.summerschool.library.service.BookService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,9 +30,13 @@ public class BookController {
     private ModelMapper modelMapper;
 
     @GetMapping
-    public ResponseEntity<List<BookDTO>> getAll() {
+    public ResponseEntity<List<BookDTO>> getAll(@RequestParam(value = "author", required = false) String author,
+                                                @RequestParam(value = "published", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate published,
+                                                @RequestParam(value = "title", required = false) String title,
+                                                @RequestParam(value = "page", required = false) Integer page,
+                                                @RequestParam(value = "sorted", required = false) SortFieldDTO sorted) {
         //TODO complete with query params for filtering by different fields
-        return ResponseEntity.ok(bookService.getAll()
+        return ResponseEntity.ok(bookService.getAll(author, published, title, page, sorted)
                 .stream()
                 .map(book -> modelMapper.map(book, BookDTO.class))
                 .collect(Collectors.toList()));
